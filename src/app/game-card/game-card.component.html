@@ -1,0 +1,9 @@
+<div
+  (click)="cardClicked.emit(cardData)"
+  *ngIf="cardData"
+  class="container"
+  [class.flipped]="cardData.status === 'flipped'"
+  [class.matched]="cardData.status === 'matched'"
+>
+  <img [src]="createImagePath()" alt="Card image" />
+</div>

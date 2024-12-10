@@ -1,0 +1,33 @@
+<div class="container">
+    <!-- Buton pentru a reseta jocul -->
+    <button class="play-again-button" (click)="playAgain()">
+      <span class="play-again-text">Play again</span>
+    </button>
+  
+    <!-- Afișează numărul rundei -->
+    <div class="info-text">Round: {{ rounds }}</div>
+  
+    <!-- Afișează numărul perechilor potrivite -->
+    <div class="info-text">Pairs: {{ matched / 2 }}</div>
+  
+    <!-- Timerul jocului -->
+    <div class="info-text">
+      Time: {{ calculateElapsedTime() }} seconds
+    </div>
+  
+    <!-- Afișare mesaj câștig dacă jocul este complet -->
+    <div class="info-text" *ngIf="gameStatus === 'GameCompleted'">
+       You won!
+    </div>
+  </div>
+  
+  <!-- Tabla de joc cu cărți -->
+  <div class="board">
+    <app-game-card
+      class="game-card"
+      *ngFor="let card of cards"
+      [cardData]="card"
+      (cardClicked)="cardClicked(card)"
+    ></app-game-card>
+  </div>
+  
