@@ -1,9 +1,4 @@
-<div
-  (click)="cardClicked.emit(cardData)"
-  *ngIf="cardData"
-  class="container"
-  [class.flipped]="cardData.status === 'flipped'"
-  [class.matched]="cardData.status === 'matched'"
->
-  <img [src]="createImagePath()" alt="Card image" />
+<div class="card" (click)="flipCard()">
+    <img *ngIf="card.revealed" [src]="card.url" alt="Card Image" />
+    <div class="back" *ngIf="!card.revealed"></div>
 </div>

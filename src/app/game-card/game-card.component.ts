@@ -1,29 +1,18 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { CardData } from '../card.models';
 import { NgIf } from '@angular/common';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
+
 @Component({
   selector: 'app-game-card',
   standalone: true,
-  imports: [NgIf],
   templateUrl: './game-card.component.html',
-  styleUrls: ['./game-card.component.css']
+  styleUrls: ['./game-card.component.css'],
+  imports: [NgIf]
 })
-export class GameCardComponent{
-  @Input() cardData?: CardData;
-  @Output() cardClicked=new EventEmitter<CardData>();
+export class GameCardComponent {
+  @Input() card!: { id: number; url: string; revealed: boolean };
+  @Output() cardFlipped = new EventEmitter<void>();
 
-  private path: string= 'assets/';
-  constructor(){}
-  createImagePath(): string {
-    if (!this.cardData) {
-      return ''; // Returnăm un string gol dacă nu există `cardData`
-    }
-    return `${this.path}${this.cardData.imageId}.png`;
-  }
-
-  onCardClick(): void {
-    if (this.cardData) {
-      this.cardClicked.emit(this.cardData); // Emit card-ul asociat
-    }
+  flipCard() {
+    this.cardFlipped.emit();
   }
 }

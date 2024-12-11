@@ -1,136 +1,75 @@
-import { Component, OnInit } from '@angular/core';
-import { CardData, CardStatus } from '../card.models';
-import { GameStatus } from '../game.models';
-import { timer } from 'rxjs';
-import { NgIf } from '@angular/common';
-import { GameCardComponent } from '../game-card/game-card.component';
+import { Component, Input, Output, EventEmitter, OnInit, OnChanges } from '@angular/core';
+import { NgFor, NgIf } from '@angular/common';
+
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [NgIf, GameCardComponent],
   templateUrl: './game.component.html',
-  styleUrls: ['./game.component.css']
+  styleUrls: ['./game.component.css'],
+  imports: [NgFor, NgIf],
 })
-export class GameComponent implements OnInit {
-calculateElapsedTime():number {
-  const now=new Date();
-  return Math.floor((now.getTime()-this.startTime.getTime())/1000);
-}
-  images: string[] = [];
-  cards: CardData[] = [];
-  flippedCount: number = 0;
-  readonly imagesAmount: number = 9;
-  matched: number = 0;
-  chosenImages: number[] = [];
-  startTime!: Date;
-  gameStatus!: GameStatus;
-  rounds: number = 0;
+export class GameComponent implements OnInit, OnChanges {
+  @Input() images: string[] = []; // Imagini primite de la componenta părinte
+  @Output() levelComplete = new EventEmitter<void>(); // Semnalizare finalizare nivel
 
-  ngOnInit(): void {
-    this.playAgain();
+  shuffledCards: { id: number; url: string; revealed: boolean }[] = [];
+  firstCard: any = null; // Primul card selectat
+  pairsFound = 0;
+
+  ngOnInit() {
+    this.generateCards(this.images);
   }
 
-  playAgain(): void {
-    this.matched = 0;
-    this.flippedCount = 0;
-    this.chosenImages = [];
-    this.addImages();
-    this.addCards();
-    this.startTime = new Date(Date.now());
-    if (this.gameStatus === GameStatus.GameCompleted) {
-      this.rounds += 1;
+  ngOnChanges() {
+    this.generateCards(this.images);
+  }
+
+  generateCards(images: string[]) {
+    const cards = images.flatMap((url, id) => [
+      { id: id * 2, url, revealed: false },
+      { id: id * 2 + 1, url, revealed: false },
+    ]);
+    this.shuffledCards = this.shuffle(cards);
+    console.log('Carduri generate:', this.shuffledCards);
+    this.pairsFound = 0; // Resetăm perechile găsite.
+  }
+
+  shuffle(array: any[]) {
+    return array.sort(() => Math.random() - 0.5);
+  }
+
+  onCardFlipped(card: any) {
+    if (!card || card.revealed || (this.firstCard && this.firstCard === card)) {
+      return; // Ignorăm cardurile deja dezvăluite sau clickurile repetate
     }
-    this.gameStatus = GameStatus.DuringTheGame;
-  }
 
-  checkGameStatus(): void {
-    if (this.matched !== 2 * this.imagesAmount) {
-      this.gameStatus = GameStatus.DuringTheGame;
-    }
-    if (this.matched === 2 * this.imagesAmount) {
-      this.gameStatus = GameStatus.GameCompleted;
-    }
-  }
+    card.revealed = true; // Arată cardul
 
-  addImages(): void {
-    this.images = [];
-    for (let i = 1; i <= this.imagesAmount; i++) {
-      this.images.push(`image${i}`); // Nume de imagini: image1, image2, etc.
-    }
-  }
-  
+    if (!this.firstCard) {
+      this.firstCard = card; // Salvează primul card selectat
+    } else {
+      // Comparăm dacă cele două carduri selectate sunt o pereche
+      if (this.firstCard.url === card.url) {
+        this.pairsFound++; // Creștem numărul de perechi găsite
+        console.log(
+          `Pereche găsită! Perechi găsite până acum: ${this.pairsFound}`
+        );
+        this.firstCard = null; // Resetăm primul card
 
-  addCards(): void {
-    this.cards = [];
-    this.images.forEach((image) => {
-      const cardData: CardData = {
-        imageId: image,
-        status: CardStatus.Default,
-      };
-      this.cards.push({ ...cardData });
-      this.cards.push({ ...cardData });
-    });
-    this.cards = this.shuffleArray(this.cards);
-  }
-
-  shuffleArray(anArray: any[]): any[] {
-    return anArray
-      .map((a) => [Math.random(), a])
-      .sort((a, b) => a[0] - b[0])
-      .map((a) => a[1]);
-  }
-
-  randomize(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
-  cardClicked(card: CardData): void {
-    if (card.status === CardStatus.Default && this.flippedCount < 2) {
-      card.status = CardStatus.Flipped;
-      this.flippedCount += 1;
-    }
-    if (this.flippedCount === 2) {
-      timer(400).subscribe(() => {
-        this.matchCards();
-      });
-    }
-  }
-
-  matchCards(): void {
-    const cardsToMatch: CardData[] = [];
-    this.cards.forEach((card) => {
-      if (card.status === CardStatus.Flipped) {
-        cardsToMatch.push(card);
-      }
-    });
-
-    if (cardsToMatch[0] && cardsToMatch[1]) {
-      if (cardsToMatch[0].imageId === cardsToMatch[1].imageId) {
-        this.cards.forEach((card) => {
-          if (card.imageId === cardsToMatch[0].imageId) {
-            card.status = CardStatus.Matched;
-            this.matched += 1;
-          }
-        });
+        if (this.pairsFound === this.shuffledCards.length / 2) {
+          console.log('Toate perechile găsite! Trecem la nivelul următor.');
+          setTimeout(() => this.levelComplete.emit(), 500); // Semnalizează completarea nivelului
+        }
       } else {
-        timer(400).subscribe(() => {
-          this.cards.forEach((card) => {
-            if (
-              card.imageId === cardsToMatch[0].imageId ||
-              card.imageId === cardsToMatch[1].imageId
-            ) {
-              card.status = CardStatus.Default;
-            }
-          });
-        });
+        // Dacă cardurile nu sunt o pereche, le întoarcem pe dos după o întârziere
+        setTimeout(() => {
+          if (this.firstCard) {
+            this.firstCard.revealed = false;
+          }
+          card.revealed = false;
+          this.firstCard = null;
+        }, 1000);
       }
     }
-
-    this.flippedCount = 0;
-    this.checkGameStatus();
-  }
-
-  stopTimer(): boolean {
-    return this.gameStatus === GameStatus.GameCompleted;
   }
 }
