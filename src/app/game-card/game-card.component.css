@@ -41,6 +41,12 @@
   background-position: center;
   transform: rotateY(180deg);
 }
+.card-back img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Asigură-te că imaginea se potrivește bine */
+  border-radius: 10px; /* Adaugă un colț rotunjit pentru imagini */
+}
 @media (max-width: 768px) {
   .card {
     width: 80px;
