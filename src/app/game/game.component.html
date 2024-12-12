@@ -4,7 +4,7 @@
   <div class="timer-bar">
     <div class="timer-fill" [style.width.%]="(timeLeft / totalTime) * 100"></div>
   </div>
-  
+
   <p *ngIf="!gameOver">Time Left: {{ timeLeft }} seconds</p>
   <p *ngIf="!gameOver">Score: {{ score }}</p>
 
@@ -22,6 +22,10 @@
   <!-- Mesajul de final -->
   <div *ngIf="gameOver" class="game-over">
     <p>{{ gameOverMessage }}</p>
-    <button (click)="restart.emit()">Play Again</button>
+    <div class="game-over-buttons">
+      <button *ngIf="level.name !== 'Hard'" (click)="nextLevel()">Next Level</button>
+      <button *ngIf="level.name === 'Hard'" (click)="restart.emit()">Play Again</button>
+    </div>
   </div>
+  
 </div>

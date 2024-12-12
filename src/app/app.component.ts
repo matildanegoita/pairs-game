@@ -18,8 +18,11 @@ export class AppComponent {
   selectedLevel: { name: string; pairs: number } | null = null;
 
   selectLevel(level: { name: string; pairs: number }): void {
-    this.selectedLevel = level;
-  }
+    this.selectedLevel = null; // Resetează nivelul selectat anterior
+    setTimeout(() => {
+      this.selectedLevel = level; // Setează noul nivel
+    });
+  }  
   restart(): void {
     this.selectedLevel = null;
   }

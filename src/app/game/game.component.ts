@@ -12,6 +12,7 @@ import { NgFor, NgIf } from '@angular/common';
 })
 export class GameComponent implements OnInit {
   @Input() level!: { name: string; pairs: number };
+  @Input() levels!: { name: string; pairs: number }[]; // Primește lista nivelurilor din AppComponent
   @Output() restart = new EventEmitter<void>();
 
   cards: { image: string }[] = [];
@@ -93,15 +94,24 @@ export class GameComponent implements OnInit {
     }
   }
   
-    endGame(won: boolean): void {
-      clearInterval(this.timerInterval);
-
-  this.gameOver = true;
-  this.gameOverMessage = won
-    ? `Congratulations! Your score is ${this.score}. Time left: ${this.timeLeft} seconds.`
-    : `Time is up! Better luck next time.`;
-
-  // Resetare automată după câteva secunde (opțional)
-  setTimeout(() => this.restart.emit(), 5000);
-}
+  endGame(won: boolean): void {
+    clearInterval(this.timerInterval);
+  
+    this.gameOver = true;
+    this.gameOverMessage = won
+      ? `Congratulations! Your score is ${this.score}. Time left: ${this.timeLeft} seconds.`
+      : `Time is up! Better luck next time.`;
+  }
+  
+  nextLevel(): void {
+    const currentIndex = this.levels.findIndex((lvl) => lvl.name === this.level.name);
+    if (currentIndex < this.levels.length - 1) {
+      this.level = this.levels[currentIndex + 1]; // Setăm următorul nivel
+    this.startGame(this.level.pairs); // Reinițializăm jocul pentru nivelul următor
+    this.gameOver = false; // Resetăm starea de game over
+    this.gameOverMessage = ''; // Resetăm mesajul de final
+    } else {
+      this.restart.emit(); // Dacă este ultimul nivel, resetează jocul
+    }
+  }
 }

@@ -1,31 +1,214 @@
+.game {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+  background-color: rgba(238, 238, 238, 0.9);
+  border-radius: 15px;
+  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.game h2 {
+  font-size: 28px;
+  color: #000000;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.timer-bar {
+  width: 100%;
+  height: 15px;
+  background-color: #e0e0e0; /* Gri deschis */
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 20px;
+  box-shadow: inset 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.timer-fill {
+  height: 100%;
+  background-color: #bfb6b7; 
+  transition: width 1s linear;
+}
+
+.game p {
+  font-size: 18px;
+  color: #777;
+  margin: 5px 0;
+}
+
 .game-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 15px;
+  width: 100%;
+  margin-top: 20px;
+  max-width: 600px;
+  margin-top: 20px;
+}
+.game-over {
+  text-align: center;
+  background-color: rgba(189, 187, 187, 0.9); 
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.game-over {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background-color: rgba(189, 187, 187, 0.9);
+  color: #000000;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 20px;
+  animation: fadeIn 1s ease-in-out;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.game-over p {
+  font-size: 18px;
+  margin-bottom: 20px;
+  color: #333333;
+}
+
+.game-over-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.game-over-buttons button {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  background-color: #777;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  width: 100px;
+}
+
+.game-over-buttons button:hover {
+  background-color: #555;
+  box-shadow: 0px 6px 8px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Animație pentru mesajul de final */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.matched {
+  animation: bounce 0.5s ease-in-out;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+
+/* Responsivitate pentru toate componentele */
+@media (max-width: 768px) {
+  .game-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 coloane */
     gap: 10px;
-    margin: 20px;
   }
-  
+
   .game {
-    text-align: center;
+    padding: 15px;
   }
-  
-  h2 {
-    font-size: 24px;
-    margin-bottom: 20px;
+
+  .game h2 {
+    font-size: 22px;
+  }
+
+  .game p {
+    font-size: 16px;
   }
   .timer-bar {
-    width: 100%;
-    height: 20px;
-    background-color: #e0e0e0; /* Fundalul barei */
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 20px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+    height: 10px;
   }
-  
-  .timer-fill {
-    height: 100%;
-    background-color: #4caf50; /* Culoare verde pentru progres */
-    transition: width 1s linear; /* Tranziție lină */
+
+  .game-over {
+    padding: 15px;
+    font-size: 16px;
+    max-width: 90%;
   }
-  
+
+  .game-over p {
+    font-size: 16px;
+  }
+
+  .game-over-buttons button {
+    padding: 6px 12px;
+    font-size: 12px;
+    width: 90px;
+  }
+
+  button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+@media (max-width: 480px) {
+  .game-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 coloane */
+    gap: 10px;
+  }
+
+  .game {
+    padding: 10px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .game-over {
+    padding: 10px;
+    font-size: 14px;
+    max-width: 80%;
+  }
+
+  .game-over p {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .game-over-buttons button {
+    padding: 5px 10px;
+    font-size: 12px;
+    width: 80px;
+  }
+
+  button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+}
