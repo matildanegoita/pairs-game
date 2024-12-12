@@ -1,11 +1,13 @@
-<div class="board">
-    <div
-      class="card"
-      *ngFor="let card of shuffledCards"
-      (click)="onCardFlipped(card)"
-    >
-      <img *ngIf="card.revealed" [src]="card.url" alt="Image" />
-      <div class="back" *ngIf="!card.revealed"></div>
+<div class="game">
+    <h2>{{ level.name }} Level</h2>
+    <div class="game-grid" *ngIf="!loading">
+      <app-game-card
+        *ngFor="let card of cards; let i = index"
+        [image]="card.image"
+        [flipped]="flippedCards.includes(i) || matchedCards.includes(i)"
+        (click)="flipCard(i)"
+      ></app-game-card>
     </div>
+    <p *ngIf="loading">Loading...</p>
   </div>
   

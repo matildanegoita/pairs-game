@@ -1,5 +1,13 @@
-<div class="game-container">
-    <h1>Memory Game - Nivel {{ level }}</h1>
-    <app-game [images]="images" (levelComplete)="onLevelComplete()"></app-game>
+<div *ngIf="!selectedLevel" class="level-selection">
+    <h2>Select a Level</h2>
+    <button
+      *ngFor="let level of levels"
+      (click)="selectLevel(level)"
+      class="level-button"
+    >
+      {{ level.name }}
+    </button>
   </div>
+  
+  <app-game *ngIf="selectedLevel" [level]="selectedLevel"></app-game>
   

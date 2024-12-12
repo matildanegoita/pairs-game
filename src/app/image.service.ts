@@ -1,18 +1,21 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ImageService {
-  private images: string[] = [];
+  constructor(private http: HttpClient) {}
 
-  fetchImages(count: number) {
-    this.images = Array.from({ length: count }, () =>
-      `https://picsum.photos/200/300?random=${Math.random() * 1000}`
+  getImages(count: number): Observable<string[]> {
+    const urls = Array.from({ length: count }, (_, i) =>
+      `https://picsum.photos/200?random=${i}`
     );
-  }
-
-  getImages() {
-    return [...this.images]; // Returnăm o copie a imaginilor
+    return new Observable((observer) => {
+      observer.next(urls);
+      observer.complete();
+    });
   }
 }

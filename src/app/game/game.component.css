@@ -1,49 +1,16 @@
-.board {
+.game-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 15px; /* Distanța între carduri */
-    justify-content: center;
-    margin: 20px auto;
-    max-width: 800px; /* Lățimea maximă a grilei */
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+    margin: 20px;
   }
   
-  .card {
-    width: 100%; /* Cardurile ocupă tot spațiul în coloană */
-    aspect-ratio: 3 / 4; /* Cardurile au un raport de aspect de 3:4 */
-    cursor: pointer;
-    perspective: 1000px;
-    position: relative;
+  .game {
+    text-align: center;
   }
   
-  .card img {
-    width: 100%;
-    height: 100%;
-    border-radius: 10px;
-    backface-visibility: hidden; /* Pentru efectul de întoarcere */
-    transform: rotateY(0);
-  }
-  
-  .card .back {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #555; /* Culoarea spatelui cardului */
-    border-radius: 10px;
-    transform: rotateY(180deg); /* Partea "ascunsă" */
-  }
-  
-  .card:hover {
-    transform: scale(1.05); /* Efect de hover */
-    transition: transform 0.3s ease;
-  }
-  
-  .card.revealed img {
-    transform: rotateY(0); /* Imaginea vizibilă */
-  }
-  
-  .card.revealed .back {
-    transform: rotateY(180deg); /* Spatele ascuns */
+  h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
   }
   

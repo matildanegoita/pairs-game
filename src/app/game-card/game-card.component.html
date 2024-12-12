@@ -1,4 +1,8 @@
-<div class="card" (click)="flipCard()">
-    <img *ngIf="card.revealed" [src]="card.url" alt="Card Image" />
-    <div class="back" *ngIf="!card.revealed"></div>
-</div>
+<div class="card" [class.flipped]="flipped" (click)="onClick()">
+    <div class="card-inner">
+      <div class="card-front"></div>
+      <div class="card-back">
+        <img [src]="image" alt="Card Image" />
+      </div>
+    </div>
+  </div>

@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
@@ -6,13 +5,13 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   standalone: true,
   templateUrl: './game-card.component.html',
   styleUrls: ['./game-card.component.css'],
-  imports: [NgIf]
 })
 export class GameCardComponent {
-  @Input() card!: { id: number; url: string; revealed: boolean };
-  @Output() cardFlipped = new EventEmitter<void>();
+  @Input() image!: string;
+  @Input() flipped = false;
+  @Output() click = new EventEmitter<void>();
 
-  flipCard() {
-    this.cardFlipped.emit();
+  onClick() {
+    this.click.emit();
   }
 }
