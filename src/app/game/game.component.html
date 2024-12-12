@@ -1,5 +1,10 @@
 <div class="game">
   <h2>{{ level.name }} Level</h2>
+
+  <div class="timer-bar">
+    <div class="timer-fill" [style.width.%]="(timeLeft / totalTime) * 100"></div>
+  </div>
+  
   <p *ngIf="!gameOver">Time Left: {{ timeLeft }} seconds</p>
   <p *ngIf="!gameOver">Score: {{ score }}</p>
 
@@ -12,6 +17,7 @@
     ></app-game-card>
   </div>
   <p *ngIf="loading">Loading...</p>
+  
 
   <!-- Mesajul de final -->
   <div *ngIf="gameOver" class="game-over">

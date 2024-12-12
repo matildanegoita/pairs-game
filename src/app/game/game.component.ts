@@ -19,10 +19,12 @@ export class GameComponent implements OnInit {
   matchedCards: number[] = [];
   score: number = 0;
   timeLeft: number = 0;
-  timerInterval: any = null;
+  timerInterval: any ;
   loading = false;
   gameOver: boolean = false;
   gameOverMessage: string = '';
+  totalTime: number = 0;
+
   constructor(private imageService: ImageService) {}
 
   ngOnInit(): void {
@@ -32,11 +34,15 @@ export class GameComponent implements OnInit {
   startGame(pairs: number): void {
     this.loading = true;
     this.score = 0;
-    this.timeLeft =
-      this.level.name === 'Easy' ? 30 : this.level.name === 'Medium' ? 60 : 90;
-
+  
+    // Setează timpul total și timpul rămas în funcție de nivelul selectat
+    this.totalTime = this.level.name === 'Easy' ? 30 : this.level.name === 'Medium' ? 60 : 90;
+    this.timeLeft = this.totalTime;
+  
+    // Pornește cronometrul
     this.startTimer();
-
+  
+    // Obține imaginile folosind serviciul și inițializează cărțile
     this.imageService.getImages(pairs).subscribe((images) => {
       this.cards = [...images, ...images]
         .map((image) => ({ image }))
@@ -46,6 +52,7 @@ export class GameComponent implements OnInit {
       this.loading = false;
     });
   }
+  
   startTimer(): void {
     this.timerInterval = setInterval(() => {
       if (this.timeLeft > 0) {
