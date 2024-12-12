@@ -1,13 +1,21 @@
 <div class="game">
-    <h2>{{ level.name }} Level</h2>
-    <div class="game-grid" *ngIf="!loading">
-      <app-game-card
-        *ngFor="let card of cards; let i = index"
-        [image]="card.image"
-        [flipped]="flippedCards.includes(i) || matchedCards.includes(i)"
-        (click)="flipCard(i)"
-      ></app-game-card>
-    </div>
-    <p *ngIf="loading">Loading...</p>
+  <h2>{{ level.name }} Level</h2>
+  <p *ngIf="!gameOver">Time Left: {{ timeLeft }} seconds</p>
+  <p *ngIf="!gameOver">Score: {{ score }}</p>
+
+  <div class="game-grid" *ngIf="!loading && !gameOver">
+    <app-game-card
+      *ngFor="let card of cards; let i = index"
+      [image]="card.image"
+      [flipped]="flippedCards.includes(i) || matchedCards.includes(i)"
+      (click)="flipCard(i)"
+    ></app-game-card>
   </div>
-  
+  <p *ngIf="loading">Loading...</p>
+
+  <!-- Mesajul de final -->
+  <div *ngIf="gameOver" class="game-over">
+    <p>{{ gameOverMessage }}</p>
+    <button (click)="restart.emit()">Play Again</button>
+  </div>
+</div>

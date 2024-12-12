@@ -20,4 +20,7 @@ export class AppComponent {
   selectLevel(level: { name: string; pairs: number }): void {
     this.selectedLevel = level;
   }
+  restart(): void {
+    this.selectedLevel = null;
+  }
 }

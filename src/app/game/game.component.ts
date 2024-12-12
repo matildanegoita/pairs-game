@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { GameCardComponent } from '../game-card/game-card.component';
 import { ImageService } from '../image.service';
 import { NgFor, NgIf } from '@angular/common';
@@ -12,12 +12,17 @@ import { NgFor, NgIf } from '@angular/common';
 })
 export class GameComponent implements OnInit {
   @Input() level!: { name: string; pairs: number };
+  @Output() restart = new EventEmitter<void>();
 
   cards: { image: string }[] = [];
   flippedCards: number[] = [];
   matchedCards: number[] = [];
+  score: number = 0;
+  timeLeft: number = 0;
+  timerInterval: any = null;
   loading = false;
-
+  gameOver: boolean = false;
+  gameOverMessage: string = '';
   constructor(private imageService: ImageService) {}
 
   ngOnInit(): void {
@@ -26,6 +31,12 @@ export class GameComponent implements OnInit {
 
   startGame(pairs: number): void {
     this.loading = true;
+    this.score = 0;
+    this.timeLeft =
+      this.level.name === 'Easy' ? 30 : this.level.name === 'Medium' ? 60 : 90;
+
+    this.startTimer();
+
     this.imageService.getImages(pairs).subscribe((images) => {
       this.cards = [...images, ...images]
         .map((image) => ({ image }))
@@ -35,6 +46,16 @@ export class GameComponent implements OnInit {
       this.loading = false;
     });
   }
+  startTimer(): void {
+    this.timerInterval = setInterval(() => {
+      if (this.timeLeft > 0) {
+        this.timeLeft--;
+      } else {
+        clearInterval(this.timerInterval);
+        this.endGame(false);
+      }
+    }, 1000);
+  }
 
   flipCard(index: number): void {
     if (
@@ -43,12 +64,19 @@ export class GameComponent implements OnInit {
       !this.matchedCards.includes(index)
     ) {
       this.flippedCards.push(index);
-
+  
       if (this.flippedCards.length === 2) {
         const [firstIndex, secondIndex] = this.flippedCards;
+  
         if (this.cards[firstIndex].image === this.cards[secondIndex].image) {
           this.matchedCards.push(firstIndex, secondIndex);
           this.flippedCards = [];
+          this.score += 10;
+  
+          // Verificăm dacă jocul s-a terminat
+          if (this.matchedCards.length === this.cards.length) {
+            this.endGame(true);
+          }
         } else {
           setTimeout(() => {
             this.flippedCards = [];
@@ -57,4 +85,16 @@ export class GameComponent implements OnInit {
       }
     }
   }
+  
+    endGame(won: boolean): void {
+      clearInterval(this.timerInterval);
+
+  this.gameOver = true;
+  this.gameOverMessage = won
+    ? `Congratulations! Your score is ${this.score}. Time left: ${this.timeLeft} seconds.`
+    : `Time is up! Better luck next time.`;
+
+  // Resetare automată după câteva secunde (opțional)
+  setTimeout(() => this.restart.emit(), 5000);
+}
 }
