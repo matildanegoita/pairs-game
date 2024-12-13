@@ -24,6 +24,13 @@ export class AppComponent {
     });
   }  
   restart(): void {
-    this.selectedLevel = null;
+    const easyLevel = this.levels.find((level) => level.name === 'Easy');
+    if (easyLevel) {
+      this.selectedLevel = null; // Resetează nivelul selectat anterior
+      setTimeout(() => {
+        this.selectedLevel = easyLevel; // Setează nivelul "Easy"
+      });
+    }
   }
+  
 }

@@ -40,17 +40,19 @@ export class GameComponent implements OnInit {
     this.totalTime = this.level.name === 'Easy' ? 30 : this.level.name === 'Medium' ? 60 : 90;
     this.timeLeft = this.totalTime;
   
-    // Pornește cronometrul
-    this.startTimer();
+  
   
     // Obține imaginile folosind serviciul și inițializează cărțile
-    this.imageService.getImages(pairs).subscribe((images) => {
+    this.imageService.getImages(this.level.pairs).then((images) => {
       this.cards = [...images, ...images]
         .map((image) => ({ image }))
         .sort(() => Math.random() - 0.5);
       this.flippedCards = [];
       this.matchedCards = [];
       this.loading = false;
+
+    // Pornește cronometrul
+    this.startTimer();
     });
   }
   
